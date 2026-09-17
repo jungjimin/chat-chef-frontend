@@ -29,10 +29,20 @@ const Info = ( {sendIngredients} ) => {
 
   /* 다음 버튼 클릭 시 */
   const handleNext = () => {
-    // console.log("chat페이지로 이동"); // 구현완료로 주석처리
-    // react-router-dom을 이용한 페이지 이동
-    sendIngredients(ingredients)
-    history("/chat");
+    // 입력값이 있는 배열
+    const filterDataList = ingredients.filter(   // 재료 입력값 유효성 체크
+      (item) => item.value.trim() !== ""
+    );
+    console.log("🚀filterDataList:", filterDataList);
+    if (filterDataList.length) {
+      // 재료 입력값이 있는 경우
+      sendIngredients(ingredients)
+      history("/chat");
+      return;
+    }
+  
+    // 재료 입력값이 없는 경우
+    alert("재료를 최소 1개이상 입력해주세요");
   };
 
   /* 재료 삭제하기 */
