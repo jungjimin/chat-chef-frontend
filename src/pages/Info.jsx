@@ -5,7 +5,7 @@ import AddButton from "../components/AddButton";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 
-const Info = () => {
+const Info = ( {sendIngredients} ) => {
   // logic
   const history = useNavigate();
   
@@ -13,6 +13,7 @@ const Info = () => {
   
   /* 재료 추가 버튼 클릭 시 */
   const addIngredient = () => { // 재료 추가 버튼 클릭 시
+
     const id = Date.now();
 
     const newItem = { 
@@ -30,6 +31,7 @@ const Info = () => {
   const handleNext = () => {
     // console.log("chat페이지로 이동"); // 구현완료로 주석처리
     // react-router-dom을 이용한 페이지 이동
+    sendIngredients(ingredients)
     history("/chat");
   };
 
