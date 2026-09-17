@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PrevButton from "../components/PrevButton";
 import InfoInput from "../components/InfoInput";
 import AddButton from "../components/AddButton";
@@ -9,18 +9,57 @@ const Info = () => {
   // logic
   const history = useNavigate();
   
-  // TODO: set함수 추가하기
-  const [ingredientList] = useState([]); // 사용자가 입력할 재료 목록
+  const [ingredients, setIngredients] = useState([]); // 사용자가 입력할 재료
+  
+  /* 재료 추가 버튼 클릭 시 */
+  const addIngredient = () => { // 재료 추가 버튼 클릭 시
+    const id = Date.now();
 
-  const addIngredient = () => {
-    console.log("재료 추가하기");
+    const newItem = { 
+      id, 
+      label: `ingredients-${id}`,
+      text: "재료명", 
+      value: ""
+    };
+
+    // state값 변경
+    setIngredients((previousIngredients) => [...previousIngredients, newItem]);
   };
 
+  /* 다음 버튼 클릭 시 */
   const handleNext = () => {
     // console.log("chat페이지로 이동"); // 구현완료로 주석처리
     // react-router-dom을 이용한 페이지 이동
     history("/chat");
   };
+
+  /* 재료 삭제하기 */
+  const handleRemove = (selectedId) => {
+    // 사용자가 클릭한 요소를 제외한 남은 재료 리스트 만들기
+    const filterIngredientList = ingredients.filter((ingredient) => ingredient.id !== selectedId)
+
+    setIngredients(filterIngredientList)
+  };
+  
+  /* 재료 변경하기 */
+  const handleChange = (data) => {
+    //console.log("🚀 ~ handleChange ~ data:", data)
+    // map : 재료 리스트에서 재료 데이터 가져오기
+    const changedIngredient = ingredients.map((ingredient) => ingredient.id === data.id ? data : ingredient )
+
+    setIngredients(changedIngredient)
+  };
+
+  /* 페이지 새로고침 방지 */
+  const handleSubmit = (event) => {
+    // 재료 데이터 전송(페이지 새로고침 막기)
+    event.preventDefault();
+    //console.log(ingredients);
+  }
+
+  useEffect(() => {
+    console.log("🚀 ingredients:", ingredients)
+  }, [ingredients])
 
   // view
   return (
@@ -32,19 +71,20 @@ const Info = () => {
       <div className="h-full flex flex-col">
         {/* TODO:Title 컴포넌트 */}
         <div className="px-2 pt-6">
-          <h1 className="text-4.5xl font-black text-white">
-            당신의 냉장고를 알려주세요
+          <h1 className="text-4.5xl font-bold tracking-tight leading-tight text-white">
+            당신의 냉장고를 <br/>알려주세요🥘
           </h1>
         </div>
         {/* // TODO:Title 컴포넌트 */}
 
         {/* START:form 영역 */}
         <div className="mt-20 overflow-auto">
-          <form>
+          <form onSubmit={(event) => handleSubmit(event)}>
             {/* START:input 영역 */}
             <div>
-              {ingredientList.map((item) => (
-                <InfoInput key={item.id} content={item} />
+              {ingredients.map((item) => (
+                <InfoInput key={item.id} content={item} onRemove={handleRemove}
+                onChange={handleChange} />
               ))}
             </div>
             {/* END:input 영역 */}
