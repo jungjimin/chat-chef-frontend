@@ -14,8 +14,12 @@ const Info = ( {sendIngredients} ) => {
   /* 재료 추가 버튼 클릭 시 */
   const addIngredient = () => { // 재료 추가 버튼 클릭 시
 
-    const id = Date.now();
+    if (ingredients.some((item) => item.value.trim() === "")) {
+      alert("재료명을 입력해주세요");
+      return;
+    }
 
+    const id = Date.now();
     const newItem = { 
       id, 
       label: `ingredients-${id}`,
@@ -29,20 +33,18 @@ const Info = ( {sendIngredients} ) => {
 
   /* 다음 버튼 클릭 시 */
   const handleNext = () => {
-    // 입력값이 있는 배열
-    const filterDataList = ingredients.filter(   // 재료 입력값 유효성 체크
-      (item) => item.value.trim() !== ""
-    );
-    console.log("🚀filterDataList:", filterDataList);
-    if (filterDataList.length) {
-      // 재료 입력값이 있는 경우
-      sendIngredients(ingredients)
-      history("/chat");
+    if (ingredients.length === 0) {
+      alert("재료를 최소 1개이상 입력해주세요");
       return;
     }
-  
-    // 재료 입력값이 없는 경우
-    alert("재료를 최소 1개이상 입력해주세요");
+
+    if (ingredients.some((item) => item.value.trim() === "")) {
+      alert("재료명을 입력해주세요");
+      return;
+    }
+
+    sendIngredients(ingredients);
+    history("/chat");
   };
 
   /* 재료 삭제하기 */
